@@ -4,6 +4,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from embeddings.embedding_service import EmbeddingService
 from loaders.pdf_loader import PDFLoaderService
+from processing.document_processor import DocumentProcessor
 from utils.path_utils import get_documents_path, get_vectorstore_path
 from vectorstore.faiss_store import FAISSStore
 
@@ -18,28 +19,18 @@ loader = PDFLoaderService(
 
 documents = loader.load_documents()
 all_chunks = []
-for pdf_loaded in documents:
-    nombre_archivo = pdf_loaded.filename
-    pages = pdf_loaded.documents
-    total_caracteres = sum(len(pagina.page_content) for pagina in pages)
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000,
-        chunk_overlap=200
-    )
-    chunks = text_splitter.split_documents(pages)
-    all_chunks.extend(chunks)
-    for chunk in chunks:
-        chunk.metadata["filename"] = nombre_archivo
-    print(f"Documento leído: {nombre_archivo}")
+processor = DocumentProcessor()
+for document in documents:
 
-    print(f"Chunks creados: {len(chunks)}")
-    print("\nPrimer chunk:")
-    print("-" * 40)
-    if chunks:
-        print(chunks[0].page_content)
-    else:
-        print("No se generaron chunks.")
-    print("-" * 40)
+    chunks = processor.process(
+        document.filename,
+        document.documents
+    )
+
+    all_chunks.extend(chunks)
+
+    print(f"{document.filename}")
+    print(f"Chunks: {len(chunks)}")
 
 print("--------------------------------")
 print(f"Total de chunks: {len(all_chunks)}")

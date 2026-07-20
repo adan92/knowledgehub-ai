@@ -1,35 +1,36 @@
+from dataclasses import dataclass
 from pathlib import Path
+from typing import List
 
 from langchain_community.document_loaders import PyPDFLoader
-
-__all__ = ['load_pdf']
-
-all_loaded_documents = []
+from langchain_core.documents import Document
 
 
-def get_directory_documents():
-    # 1. Obtiene la ruta de este archivo (pdf_loader.py)
-    ruta_actual = Path(__file__).resolve()
-
-    # 2. Sube 3 niveles en los directorios: de 'loaders' -> 'src' -> a la raíz del proyecto
-    raiz_proyecto = ruta_actual.parents[2]
-
-    # 3. Define la ruta hacia la carpeta data/documents
-    return raiz_proyecto / "data" / "documents"
+@dataclass
+class LoadedDocument:
+    filename: str
+    documents: list[Document]
 
 
-def get_files_pdf():
-    dir_path = Path(get_directory_documents())
-    file_names = [dir_path / file.name for file in dir_path.iterdir() if file.is_file() and file.suffix == ".pdf"]
-    return file_names
+class PDFLoaderService:
 
+    def __init__(self, documents_path: Path):
+        self.documents_path = documents_path
 
-def load_pdf():
-    pdf_array = get_files_pdf()
-    for pdf_path in pdf_array:
-        try:
-            loader = PyPDFLoader(pdf_path)
-            all_loaded_documents.append({"archivo": pdf_path.name, "documentos": loader.load()})
-        except Exception as e:
-            print(f"Error loading {pdf_path}: {e}")
-    return all_loaded_documents
+    def get_pdf_files(self) -> list[Path]:
+        return list(self.documents_path.glob("*.pdf"))
+
+    def load_documents(self) -> list[LoadedDocument]:
+        loaded_documents = []
+        for pdf_path in self.get_pdf_files():
+            try:
+                loader = PyPDFLoader(str(pdf_path))
+                loaded_documents.append(LoadedDocument(
+                    filename=pdf_path.name,
+                    documents=loader.load()
+                ))
+            except Exception as e:
+
+                print(f"Error cargando {pdf_path.name}: {e}")
+
+        return loaded_documents

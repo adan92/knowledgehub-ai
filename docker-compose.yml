@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+
+  knowledgehub:
+
+    build: src
+
+    container_name: knowledgehub-ai
+
+    ports:
+      - "8501:8501"
+
+    restart: unless-stopped
+
+    env_file:
+      - .env

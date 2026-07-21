@@ -6,9 +6,10 @@ class RetrieverService:
     def __init__(self, vector_store):
         self.vector_store = vector_store
 
-    def search(self, question: str, k: int = 3) -> list[Document]:
+    def search(self, question: str, k: int = 12,fetch: int=20) -> list[Document]:
 
-        return self.vector_store.similarity_search(
+        return self.vector_store.max_marginal_relevance_search(
             query=question,
-            k=k
+            k=k,
+            fetch_k=fetch
         )

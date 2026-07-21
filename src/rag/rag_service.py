@@ -38,8 +38,8 @@ class RAGService:
         response = self.llm.invoke(
             [HumanMessage(content=prompt)]
         )
-
+        answer = response.text()
         return {
-            "answer": response.content,
+            "answer": answer,
             "documents": documents
         }

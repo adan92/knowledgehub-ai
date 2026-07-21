@@ -1,11 +1,15 @@
 # 🧠 KnowledgeHub AI
 
-> Un motor de conocimiento impulsado por Inteligencia Artificial que permite consultar información privada mediante lenguaje natural utilizando Retrieval-Augmented Generation (RAG).
+> Motor de conocimiento impulsado por Inteligencia Artificial que permite consultar documentos privados mediante lenguaje natural utilizando Retrieval-Augmented Generation (RAG).
 
-![Python](https://img.shields.io/badge/Python-3.11-blue)
+![Python](https://img.shields.io/badge/Python-3.13-blue)
 ![LangChain](https://img.shields.io/badge/LangChain-RAG-green)
+![Gemini](https://img.shields.io/badge/Gemini-LLM-orange)
+![FAISS](https://img.shields.io/badge/FAISS-VectorDB-blueviolet)
 ![Streamlit](https://img.shields.io/badge/Streamlit-UI-red)
+![Docker](https://img.shields.io/badge/Docker-Container-2496ED)
 ![OCI](https://img.shields.io/badge/Oracle%20Cloud-Deploy-orange)
+![License](https://img.shields.io/badge/License-MIT-green)
 
 ---
 
@@ -13,42 +17,72 @@
 
 KnowledgeHub AI es un asistente inteligente capaz de responder preguntas sobre documentos privados utilizando Inteligencia Artificial.
 
-En lugar de abrir manualmente múltiples archivos PDF para buscar información, el usuario simplemente realiza preguntas en lenguaje natural y obtiene respuestas contextualizadas mediante una arquitectura basada en RAG (Retrieval-Augmented Generation).
+En lugar de buscar manualmente entre múltiples archivos PDF, el usuario simplemente realiza una pregunta en lenguaje natural y el sistema recupera la información más relevante mediante una arquitectura **Retrieval-Augmented Generation (RAG)**.
 
-La primera versión del proyecto trabaja con documentos PDF, pero desde su diseño fue concebido para evolucionar hacia múltiples fuentes de información como hojas de cálculo, imágenes, bases de datos y servicios externos.
+Aunque actualmente trabaja con documentos PDF, el proyecto fue diseñado desde su inicio para evolucionar hacia múltiples fuentes de información como hojas de cálculo, imágenes, bases de datos y APIs.
 
 ---
 
-# 🎯 Problema
+# 🎥 Demo
 
-Actualmente almacenamos información importante en múltiples documentos:
+## 📹 Video demostrativo
+
+> Pendiente de publicación
+
+**YouTube**
+
+https://youtube.com/...
+
+---
+
+## 🌐 Aplicación desplegada
+
+> Pendiente de publicación
+
+https://...
+
+---
+
+# ❓ ¿Por qué KnowledgeHub AI?
+
+Las organizaciones almacenan gran parte de su conocimiento en documentos como:
 
 - Manuales
-- Contratos
-- Documentación técnica
 - Políticas
+- Documentación técnica
+- Contratos
 - Reportes
 - Guías
 
-Buscar una respuesta específica normalmente implica abrir varios archivos y recorrer cientos de páginas manualmente.
+Encontrar una respuesta específica suele requerir revisar cientos de páginas.
+Además que garantiza una mayor privacidad de los documentos que son compartidos.
 
-KnowledgeHub AI transforma esos documentos en una base de conocimiento inteligente que puede consultarse mediante preguntas en lenguaje natural.
+KnowledgeHub AI transforma esos documentos en una base de conocimiento inteligente capaz de responder preguntas mediante lenguaje natural.
 
 ---
 
 # 💡 Solución
 
-KnowledgeHub AI combina procesamiento de documentos, embeddings, búsqueda semántica y Modelos de Lenguaje (LLM) para responder preguntas utilizando únicamente la información contenida en los documentos del usuario.
+KnowledgeHub AI combina:
+
+- Procesamiento de documentos
+- Chunking
+- Embeddings
+- Búsqueda semántica
+- Modelos de Lenguaje (LLM)
+
+para responder preguntas utilizando únicamente la información contenida en los documentos del usuario.
 
 Actualmente soporta:
 
-- ✅ Documentos PDF
+- ✅ PDF
 
-Arquitectura preparada para soportar próximamente:
+Arquitectura preparada para incorporar:
 
 - Excel
 - CSV
-- Imágenes (OCR)
+- Word
+- OCR
 - Bases de datos
 - APIs
 - WhatsApp
@@ -57,81 +91,121 @@ Arquitectura preparada para soportar próximamente:
 
 # 🚀 Características
 
-## Versión actual (MVP)
+## MVP
 
-- Lectura de documentos PDF
-- Extracción automática de texto
-- División del documento en fragmentos (Chunking)
-- Generación de Embeddings
-- Almacenamiento en FAISS
-- Búsqueda semántica
-- Respuestas mediante IA
-- Interfaz desarrollada con Streamlit
-- Despliegue en Oracle Cloud Infrastructure (OCI)
+- Lectura automática de documentos PDF
+- Extracción de texto
+- Chunking
+- Embeddings con Cohere
+- Base vectorial FAISS
+- Recuperación semántica
+- Generación de respuestas mediante Gemini
+- Interfaz web con Streamlit
+- Despliegue en Oracle Cloud Infrastructure
+- Arquitectura modular
 
 ---
 
 # 🏗 Arquitectura
 
-```
+## Arquitectura general
+
+```text
                      Usuario
                          │
-                 Interfaz Streamlit
+                  Streamlit UI
                          │
-               KnowledgeHub Service
+                         ▼
+              KnowledgeHubService
                          │
-               Pipeline RAG (LangChain)
-               ┌──────────┴──────────┐
-               │                     │
-         Retriever             Modelo LLM
-               │
-          Vector Store (FAISS)
-               │
-           Embeddings
-               │
-          Documentos PDF
+                         ▼
+                   RAGService
+              ┌──────────┴──────────┐
+              │                     │
+              ▼                     ▼
+      RetrieverService      Gemini LLM
+              │
+              ▼
+            FAISS
+              │
+              ▼
+      Cohere Embeddings
+              │
+              ▼
+      DocumentProcessor
+              │
+              ▼
+       PDFLoaderService
+              │
+              ▼
+          PDF Documents
 ```
 
 ---
 
-# 🛠 Tecnologías utilizadas
+## Flujo de indexación
 
-## Backend
-
-- Python
-
-## Framework IA
-
-- LangChain
-
-## Modelo de Lenguaje
-
-- OpenAI GPT
-
-## Base de Datos Vectorial
-
-- FAISS
-
-## Procesamiento de documentos
-
-- PyPDF
-
-## Interfaz
-
-- Streamlit
-
-## Cloud
-
-- Oracle Cloud Infrastructure (OCI)
-
-## Control de versiones
-
-- Git
-- GitHub
+```text
+PDF Documents
+      │
+      ▼
+PDFLoaderService
+      │
+      ▼
+DocumentProcessor
+(Chunking)
+      │
+      ▼
+Cohere Embeddings
+      │
+      ▼
+FAISS
+```
 
 ---
 
-# 📂 Estructura del proyecto
+## Flujo de consulta
+
+```text
+Usuario
+    │
+Pregunta
+    │
+    ▼
+Retriever (FAISS)
+    │
+Chunks relevantes
+    │
+    ▼
+Prompt RAG
+    │
+    ▼
+Gemini
+    │
+    ▼
+Respuesta
+```
+
+---
+
+# 🛠 Tecnologías
+
+| Tecnología | Uso |
+|------------|-----|
+| Python | Backend |
+| LangChain | Orquestación del flujo RAG |
+| Gemini | Modelo de lenguaje |
+| Cohere | Embeddings |
+| FAISS | Base de datos vectorial |
+| PyPDF | Procesamiento de documentos |
+| Streamlit | Interfaz web |
+| Docker | Contenerización |
+| Oracle Cloud Infrastructure | Despliegue |
+| Git / GitHub | Control de versiones |
+
+---
+
+# 📂 Estructura
 
 ```text
 knowledgehub-ai/
@@ -150,13 +224,9 @@ knowledgehub-ai/
 │   └── utils/
 │
 ├── data/
-│
 ├── docs/
-│
 ├── tests/
-│
 ├── requirements.txt
-│
 └── README.md
 ```
 
@@ -164,85 +234,143 @@ knowledgehub-ai/
 
 # ⚙ Instalación
 
-Clonar el repositorio
+## Clonar repositorio
 
 ```bash
 git clone https://github.com/adan92/knowledgehub-ai.git
 ```
 
-Entrar al proyecto
-
 ```bash
 cd knowledgehub-ai
 ```
 
-Crear entorno virtual
+## Crear entorno virtual
 
 ```bash
 python -m venv .venv
 ```
 
-Activar entorno virtual
-
-Windows
+### Windows
 
 ```bash
 .venv\Scripts\activate
 ```
 
-Linux / Mac
+### Linux / macOS
 
 ```bash
 source .venv/bin/activate
 ```
 
-Instalar dependencias
+## Instalar dependencias
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Ejecutar la aplicación
+## Variables de entorno
+
+Crear un archivo `.env`
+
+```text
+GOOGLE_API_KEY=...
+COHERE_API_KEY=...
+```
+
+## Ejecutar
 
 ```bash
-streamlit run main.py
+streamlit run src/app.py
 ```
 
 ---
 
-# 💬 Ejemplos de preguntas
+# 💬 Casos de prueba
 
-El asistente podrá responder preguntas como:
+## Preguntas generales
 
-- ¿Qué tecnologías utiliza el backend?
-- ¿Cómo funciona el proceso de onboarding?
-- ¿Cuál es la arquitectura de microservicios?
-- ¿Qué estándares de desarrollo recomienda la empresa?
-- ¿Cómo se gestionan los incidentes?
+Estas preguntas validan el flujo completo del sistema.
 
----
-
-# 📸 Capturas de pantalla
-
-> Se agregarán una vez finalizada la implementación.
+- ¿Cuál es el stack tecnológico estándar?
+- ¿Qué tecnologías utiliza el proyecto Frontend?
+- ¿Qué frameworks se mencionan?
+- ¿Cuál es la arquitectura del proyecto?
+- ¿Qué responsabilidades tiene el Backend?
+- ¿Cómo está organizado el Frontend?
+- ¿Qué herramientas recomienda la guía?
 
 ---
 
-# ☁ Despliegue en Oracle Cloud
+## Preguntas específicas
 
-La documentación del despliegue será incorporada una vez publicada la aplicación en Oracle Cloud Infrastructure.
+Estas preguntas permiten validar que FAISS recupera correctamente el contexto adecuado.
+
+- ¿Qué es React?
+- ¿Qué es Angular?
+- ¿Qué es Spring Boot?
+- ¿Qué es Docker?
+- ¿Qué es JWT?
+- ¿Qué es TypeScript?
+- ¿Qué es REST?
 
 ---
 
-# 🧭 Principios de Diseño
+## Preguntas fuera del contexto
+
+El asistente responde únicamente utilizando la información contenida en los documentos.
+
+Ejemplos:
+
+- ¿Quién ganó el Mundial 2022?
+- ¿Cuál es la capital de Francia?
+- ¿Qué es ChatGPT?
+
+En estos casos el sistema indicará que no encontró información suficiente en los documentos disponibles.
+
+---
+
+# 📈 Resultados
+
+KnowledgeHub AI permite:
+
+- Consultar documentos mediante lenguaje natural.
+- Recuperar información utilizando búsqueda semántica.
+- Reducir significativamente el tiempo necesario para localizar información.
+- Mantener las respuestas restringidas al conocimiento disponible en la base documental.
+
+---
+
+# 📸 Capturas
+
+## Pantalla principal
+
+> Imagen pendiente
+
+---
+
+## Respuesta del asistente
+
+> Imagen pendiente
+
+---
+
+
+# ☁ Despliegue
+
+El proyecto se encuentra preparado para desplegarse utilizando Docker sobre Oracle Cloud Infrastructure (OCI).
+
+---
+
+# 🧭 Principios de diseño
 
 Durante el desarrollo del proyecto se siguieron los siguientes principios:
 
 - Arquitectura modular
 - Separación de responsabilidades
-- Fácil mantenimiento
+- Código mantenible
 - Escalabilidad
-- Preparado para evolucionar hacia nuevas fuentes de información
+- Bajo acoplamiento
+- Preparado para incorporar nuevas fuentes de información
 
 ---
 
@@ -250,28 +378,38 @@ Durante el desarrollo del proyecto se siguieron los siguientes principios:
 
 La versión MVP presenta las siguientes limitaciones:
 
-- Sólo soporta documentos PDF
-- No cuenta con autenticación
-- No soporta OCR
-- Sólo permite una colección de documentos
-- No almacena historial de conversaciones
+- Solo soporta documentos PDF.
+- No cuenta con autenticación.
+- No soporta OCR.
+- Trabaja con una única colección de documentos.
+- No almacena historial de conversaciones.
+- La recuperación de contexto utiliza búsqueda semántica simple.
 
 ---
 
-# 🔮 Futuro del proyecto
+# 🗺 Roadmap
 
-KnowledgeHub AI nace como un motor de conocimiento.
+## MVP
 
-El objetivo es evolucionar progresivamente para convertirse en un asistente capaz de consultar información distribuida en múltiples fuentes, como documentos, bases de datos, aplicaciones empresariales y plataformas de mensajería.
+- [x] PDF Loader
+- [x] Chunking
+- [x] Embeddings
+- [x] FAISS
+- [x] Gemini
+- [x] Streamlit
+- [x] Docker
+- [x] Oracle Cloud Infrastructure
+
+
 
 ---
 
 # 🙌 Agradecimientos
 
-Este proyecto fue iniciado como parte del Challenge **Oracle Next Education – AI Tech Builder**, pero está diseñado para continuar evolucionando como un proyecto independiente de código abierto.
+Este proyecto fue iniciado como parte del programa **Oracle Next Education – AI Tech Builder**, pero está diseñado para evolucionar como un proyecto independiente y de código abierto.
 
 ---
 
 # 📄 Licencia
 
-Este proyecto se distribuye bajo la licencia MIT.
+Este proyecto se distribuye bajo la licencia **MIT**.

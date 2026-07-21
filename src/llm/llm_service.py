@@ -3,12 +3,10 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 
 class LLMService:
 
-    def __init__(self):
+    @staticmethod
+    def create():
 
-        self.llm = ChatGoogleGenerativeAI(
-            model="gemini-2.5-flash",
+        return ChatGoogleGenerativeAI(
+            model="models/gemini-1.5-flash",
             temperature=0
         )
-
-    def get_llm(self):
-        return self.llm

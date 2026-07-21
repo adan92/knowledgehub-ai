@@ -4,7 +4,7 @@ from services.knowledgehub_service import KnowledgeHubService
 
 load_dotenv()
 def main():
-
+    
     knowledgehub = KnowledgeHubService()
 
     print()

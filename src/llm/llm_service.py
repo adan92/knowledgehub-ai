@@ -7,6 +7,6 @@ class LLMService:
     def create():
 
         return ChatGoogleGenerativeAI(
-            model="models/gemini-1.5-flash",
+            model="models/gemini-flash-latest",
             temperature=0
         )

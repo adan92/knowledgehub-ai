@@ -4,14 +4,17 @@ services:
 
   knowledgehub:
 
-    build: src
+    build: .
 
     container_name: knowledgehub-ai
+
+    restart: unless-stopped
 
     ports:
       - "8501:8501"
 
-    restart: unless-stopped
-
     env_file:
       - .env
+
+    volumes:
+      - ./data:/app/data

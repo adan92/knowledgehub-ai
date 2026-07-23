@@ -21,6 +21,7 @@ from pathlib import Path
 from embeddings.embedding_service import EmbeddingService
 from llm.llm_service import LLMService
 from loaders.pdf_loader import PDFLoaderService
+from models.source import Source
 from processing.document_processor import DocumentProcessor
 from rag.rag_service import RAGService
 from rag.retriever_service import RetrieverService
@@ -50,7 +51,15 @@ class KnowledgeHubService:
 
     def ask(self, question: str):
         """Delega la consulta al flujo RAG ya inicializado."""
-        return self.rag.ask(question)
+        result = self.rag.ask(question)
+        sources = self.__build_sources(
+            result["documents"]
+        )
+
+        return {
+            "answer": result["answer"],
+            "sources": sources
+        }
 
     def __initialize_vector_store(self):
         """Carga el índice persistido o construye uno nuevo desde los PDF."""
@@ -96,3 +105,38 @@ class KnowledgeHubService:
         self.faiss.save(vector_store, get_vectorstore_path())
         print("Vector Store creado correctamente.")
         return vector_store
+
+    @staticmethod
+    def __build_sources(documents) -> list[Source]:
+        """
+        Convierte los documentos recuperados por el RAG en
+        fuentes listas para ser utilizadas por la interfaz.
+        """
+
+        sources = []
+        rendered = set()
+
+        for document in documents:
+
+            metadata = document.metadata
+
+            key = (
+                metadata["filename"],
+                metadata["page"]
+            )
+
+            if key in rendered:
+                continue
+
+            rendered.add(key)
+
+            sources.append(
+                Source(
+                    document_id=metadata["document_id"],
+                    filename=metadata["filename"],
+                    filepath=metadata["filepath"],
+                    page=metadata["page"]
+                )
+            )
+
+        return sources

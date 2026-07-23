@@ -5,6 +5,10 @@ Convierte los documentos cargados en fragmentos (chunks) utilizando
 RecursiveCharacterTextSplitter para optimizar la recuperación de
 información durante el proceso RAG.
 """
+import hashlib
+from pathlib import Path
+
+from models import DocumentMetadata
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
@@ -45,11 +49,28 @@ class DocumentProcessor:
               Lista de fragmentos procesados.
           """
         chunks = self.text_splitter.split_documents(pages)
-        for index, chunk in enumerate(chunks):
-            chunk.metadata.update({
-                "filename": filename,
-                "chunk_id": index,
-                "total_chunks": len(chunks)
+        document_id = hashlib.sha256(
+            filename.encode("utf-8")
+        ).hexdigest()
 
-            })
+        filepath = str(
+            Path("data")
+            / "documents"
+            / filename
+        )
+
+        total_chunks = len(chunks)
+
+        for index, chunk in enumerate(chunks):
+            metadata = DocumentMetadata(
+                document_id=document_id,
+                filename=filename,
+                filepath=filepath,
+                page=chunk.metadata.get("page", 0) + 1,
+                chunk_id=index,
+                total_chunks=total_chunks
+            )
+
+            chunk.metadata.update(metadata.__dict__)
+
         return chunks

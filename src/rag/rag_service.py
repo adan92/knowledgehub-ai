@@ -1,3 +1,17 @@
+"""
+Implementación del flujo Retrieval-Augmented Generation (RAG).
+
+El servicio ejecuta las siguientes etapas:
+
+1. Recuperación de documentos relevantes.
+2. Construcción del contexto.
+3. Generación del prompt.
+4. Consulta al modelo Gemini.
+5. Devolución de la respuesta junto con las fuentes.
+
+El modelo únicamente responde utilizando el contexto recuperado,
+reduciendo alucinaciones.
+"""
 from langchain_core.messages import HumanMessage
 
 
@@ -9,7 +23,7 @@ class RAGService:
         self.llm = llm
 
     def ask(self, question: str):
-
+        """Responde una pregunta y devuelve también los documentos recuperados."""
         documents = self.retriever.search(question)
 
         context = "\n\n".join(

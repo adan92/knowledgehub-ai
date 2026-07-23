@@ -1,3 +1,10 @@
+"""
+Servicio encargado del procesamiento de documentos.
+
+Convierte los documentos cargados en fragmentos (chunks) utilizando
+RecursiveCharacterTextSplitter para optimizar la recuperación de
+información durante el proceso RAG.
+"""
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
@@ -14,6 +21,29 @@ class DocumentProcessor:
         )
 
     def process(self, filename: str, pages):
+        """
+          Divide un documento en fragmentos y agrega metadatos.
+
+          Cada chunk conserva información del documento original para que
+          posteriormente sea posible mostrar las fuentes utilizadas por el
+          modelo.
+
+          Los metadatos incluyen:
+
+          - filename
+          - chunk_id
+          - total_chunks
+
+          Args:
+              filename:
+                  Nombre del documento.
+
+              pages:
+                  Páginas obtenidas desde PyPDFLoader.
+
+          Returns:
+              Lista de fragmentos procesados.
+          """
         chunks = self.text_splitter.split_documents(pages)
         for index, chunk in enumerate(chunks):
             chunk.metadata.update({

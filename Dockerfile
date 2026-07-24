@@ -8,12 +8,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 8501
+ENV PYTHONPATH=/app/src
 
-CMD [
-    "streamlit",
-    "run",
-    "src/app.py",
-    "--server.address=0.0.0.0",
-    "--server.port=8501"
-]
+EXPOSE 8000
+EXPOSE 8501

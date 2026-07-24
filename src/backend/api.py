@@ -20,18 +20,18 @@ app.add_middleware(
 
 app.include_router(
     health_router,
-    prefix="/health",
+    prefix="/api/health",
     tags=["Health"]
 )
 
 app.include_router(
     chat_router,
-    prefix="/chat",
+    prefix="/api/chat",
     tags=["Chat"]
 )
 
 app.include_router(
     documents_router,
-    prefix="/documents",
+    prefix="/api/documents",
     tags=["Documents"]
 )

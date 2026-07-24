@@ -26,7 +26,7 @@ Este asistente responde exclusivamente con información encontrada en los docume
 """
 
 
-def render_chat(knowledgehub) -> None:
+def render_chat() -> None:
     st.title("💬 Chat")
 
     if "messages" not in st.session_state:

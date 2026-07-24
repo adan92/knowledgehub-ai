@@ -18,18 +18,18 @@ la implementación interna del pipeline.
 """
 from pathlib import Path
 
-from embeddings.embedding_service import EmbeddingService
-from llm.llm_service import LLMService
-from loaders.pdf_loader import PDFLoaderService
-from models.source import Source
-from processing.document_processor import DocumentProcessor
-from rag.rag_service import RAGService
-from rag.retriever_service import RetrieverService
-from utils.path_utils import (
+from core.embeddings.embedding_service import EmbeddingService
+from core.llm.llm_service import LLMService
+from core.loaders.pdf_loader import PDFLoaderService
+from core.models.source import Source
+from core.processing.document_processor import DocumentProcessor
+from core.rag.rag_service import RAGService
+from core.rag.retriever_service import RetrieverService
+from core.utils.path_utils import (
     get_documents_path,
     get_vectorstore_path
 )
-from vectorstore.faiss_store_service import FAISSStoreService
+from core.vectorstore.faiss_store_service import FAISSStoreService
 
 
 class KnowledgeHubService:
@@ -38,6 +38,7 @@ class KnowledgeHubService:
     Si ya existe un índice en disco se reutiliza; en caso contrario, los PDF
     se cargan, fragmentan, vectorizan y persisten durante la inicialización.
     """
+
     def __init__(self):
         self.loader = PDFLoaderService(get_documents_path())
         self.processor = DocumentProcessor()
@@ -135,7 +136,8 @@ class KnowledgeHubService:
                     document_id=metadata["document_id"],
                     filename=metadata["filename"],
                     filepath=metadata["filepath"],
-                    page=metadata["page"]
+                    page=metadata["page"],
+                    content=document.page_content
                 )
             )
 

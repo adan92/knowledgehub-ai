@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 
-from services.knowledgehub_service import KnowledgeHubService
+from core.services import KnowledgeHubService
 
 load_dotenv()
 def main():

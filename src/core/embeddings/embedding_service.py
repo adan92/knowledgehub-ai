@@ -17,6 +17,8 @@ Proyecto:
 """
 from langchain_cohere import CohereEmbeddings
 
+from config.settings import settings
+
 
 class EmbeddingService:
     """
@@ -35,7 +37,8 @@ class EmbeddingService:
     """
     def __init__(self):
         self.embedding_model = CohereEmbeddings(
-            model="embed-multilingual-v3.0"
+            model="embed-multilingual-v3.0",
+            cohere_api_key=settings.cohere_api_key
         )
 
     def get_embedding_model(self):

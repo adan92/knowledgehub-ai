@@ -8,7 +8,7 @@ información durante el proceso RAG.
 import hashlib
 from pathlib import Path
 
-from models import DocumentMetadata
+from core.models import DocumentMetadata
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 

@@ -7,8 +7,7 @@ from typing import Literal, cast
 import streamlit as st
 
 
-def render_sidebar(document_service):
-
+def render_sidebar(document_client):
     with st.sidebar:
 
         st.title("🧠 KnowledgeHub AI")
@@ -18,38 +17,43 @@ def render_sidebar(document_service):
         st.subheader("Navegación")
 
         if st.button(
-            "💬 Chat",
-            use_container_width=True,
-            type=cast(
-                Literal["primary", "secondary"],
-                "primary" if st.session_state.view == "chat" else "secondary"
-            ),
+                "💬 Chat",
+                use_container_width=True,
+                type=cast(
+                    Literal["primary", "secondary"],
+                    "primary" if st.session_state.view == "chat" else "secondary"
+                ),
         ):
             st.session_state.view = "chat"
             st.rerun()
 
         if st.button(
-            "📚 Base de conocimiento",
-            use_container_width=True,
-            type=cast(
-                Literal["primary", "secondary"],
-                "primary" if st.session_state.view == "knowledge" else "secondary"
-            ),
+                "📚 Base de conocimiento",
+                use_container_width=True,
+                type=cast(
+                    Literal["primary", "secondary"],
+                    "primary" if st.session_state.view == "knowledge" else "secondary"
+                ),
         ):
             st.session_state.view = "knowledge"
             st.rerun()
 
-        st.button(
-            "ℹ️ Acerca",
-            use_container_width=True,
-            disabled=True
-        )
+        if st.button(
+                "ℹ️ Acerca",
+                use_container_width=True,
+                type=cast(
+                    Literal["primary", "secondary"],
+                    "primary" if st.session_state.view == "about" else "secondary"
+                ),
+        ):
+            st.session_state.view = "about"
+            st.rerun()
 
         st.divider()
 
         st.subheader("Documentos")
 
-        documents = document_service.list_documents()
+        documents = document_client.list_documents()
 
         if not documents:
 
@@ -57,8 +61,8 @@ def render_sidebar(document_service):
 
         else:
 
-            for document in documents:
-                st.markdown(f"📄 {document.stem}")
+            for filename in documents:
+                st.markdown(f"📄 {filename}")
 
         st.divider()
 

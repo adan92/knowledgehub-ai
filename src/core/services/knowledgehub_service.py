@@ -20,16 +20,10 @@ from pathlib import Path
 
 from core.embeddings.embedding_service import EmbeddingService
 from core.llm.llm_service import LLMService
-from core.loaders.pdf_loader import PDFLoaderService
 from core.models.source import Source
-from core.processing.document_processor import DocumentProcessor
 from core.rag.rag_service import RAGService
 from core.rag.retriever_service import RetrieverService
-from core.utils.path_utils import (
-    get_documents_path,
-    get_vectorstore_path
-)
-from core.vectorstore.faiss_store_service import FAISSStoreService
+from core.services.index_service import IndexService
 
 
 class KnowledgeHubService:
@@ -40,15 +34,28 @@ class KnowledgeHubService:
     """
 
     def __init__(self):
-        self.loader = PDFLoaderService(get_documents_path())
-        self.processor = DocumentProcessor()
         self.embedding_service = EmbeddingService()
-        self.embedding_model = self.embedding_service.get_embedding_model()
-        self.faiss = FAISSStoreService(self.embedding_model)
-        self.vector_store = self.__initialize_vector_store()
-        self.retriever = RetrieverService(self.vector_store)
+
+        self.embedding_model = (
+            self.embedding_service.get_embedding_model()
+        )
+
+        self.index_service = IndexService(
+            self.embedding_model
+        )
+
+        self.index_service.load_or_create()
+
+        self.retriever = RetrieverService(
+            self.index_service
+        )
+
         self.llm = LLMService().create()
-        self.rag = RAGService(self.retriever, self.llm)
+
+        self.rag = RAGService(
+            self.retriever,
+            self.llm
+        )
 
     def ask(self, question: str):
         """Delega la consulta al flujo RAG ya inicializado."""
@@ -61,51 +68,6 @@ class KnowledgeHubService:
             "answer": result["answer"],
             "sources": sources
         }
-
-    def __initialize_vector_store(self):
-        """Carga el índice persistido o construye uno nuevo desde los PDF."""
-        if self.__vector_store_exists():
-            return self.__load_vector_store()
-        return self.__create_vector_store_from_documents()
-
-    @staticmethod
-    def __vector_store_exists() -> bool:
-        """Comprueba que existan los dos archivos requeridos por FAISS."""
-        vectorstore_path = Path(get_vectorstore_path())
-        return (
-                (vectorstore_path / "index.faiss").exists()
-                and (vectorstore_path / "index.pkl").exists()
-        )
-
-    def __load_vector_store(self):
-        """Restaura el índice vectorial existente."""
-        print("Vector Store encontrado.")
-        print("Cargando índice existente...")
-        return self.faiss.load(get_vectorstore_path())
-
-    def __create_vector_store_from_documents(self):
-        """Construye y guarda el índice a partir de todos los PDF disponibles."""
-        print("No existe un Vector Store.")
-        print("Iniciando proceso de indexación...")
-        documents = self.loader.load_documents()
-        all_chunks = []
-
-        for document in documents:
-            chunks = self.processor.process(document.filename, document.documents)
-            all_chunks.extend(chunks)
-            print(f"{document.filename}: {len(chunks)} chunks")
-
-        if not all_chunks:
-            raise ValueError(
-                "No se encontraron fragmentos para indexar. "
-                "Agrega al menos un PDF válido en data/documents."
-            )
-
-        print(f"Total de chunks: {len(all_chunks)}")
-        vector_store = self.faiss.create_vector_store(all_chunks)
-        self.faiss.save(vector_store, get_vectorstore_path())
-        print("Vector Store creado correctamente.")
-        return vector_store
 
     @staticmethod
     def __build_sources(documents) -> list[Source]:

@@ -1,10 +1,10 @@
 """
 Componente principal del chat.
 """
-import requests
+from uuid import uuid4
+
 import streamlit as st
 
-from config.settings import settings
 from frontend.ui.pdf_viewer import render_pdf_panel
 from frontend.ui.source_cards import render_sources
 
@@ -26,7 +26,8 @@ Este asistente responde exclusivamente con información encontrada en los docume
 """
 
 
-def render_chat() -> None:
+def render_chat(chat_client) -> None:
+
     st.title("💬 Chat")
 
     if "messages" not in st.session_state:
@@ -37,25 +38,27 @@ def render_chat() -> None:
         gap="large"
     )
 
-    #
+    # ------------------------------------------------------------------
     # CHAT
-    #
+    # ------------------------------------------------------------------
+
     with chat_column:
 
         if not st.session_state.messages:
             st.info(WELCOME_MESSAGE)
 
+        # Historial
         for message in st.session_state.messages:
 
             with st.chat_message(message["role"]):
 
-                st.markdown(
-                    message["content"]
-                )
+                st.markdown(message["content"])
 
                 if message["role"] == "assistant":
+
                     render_sources(
-                        message.get("sources", [])
+                        message.get("sources", []),
+                        message["id"]
                     )
 
         question = st.chat_input(
@@ -63,46 +66,76 @@ def render_chat() -> None:
         )
 
         if question:
-            # Limpiar el visor para la nueva consulta
-            st.session_state.pop("selected_source", None)
 
+            st.session_state.pop(
+                "selected_source",
+                None
+            )
+
+            #
+            # Mostrar inmediatamente la pregunta
+            #
+            with st.chat_message("user"):
+                st.markdown(question)
+
+            #
+            # Placeholder para la respuesta
+            #
+            with st.chat_message("assistant"):
+
+                response_placeholder = st.empty()
+
+                with response_placeholder.container():
+
+                    with st.spinner(
+                        "🧠 Analizando documentos..."
+                    ):
+                        response = chat_client.ask(question)
+
+                if response.success:
+
+                    assistant_message = response.answer
+                    sources = response.sources
+
+                else:
+
+                    assistant_message = response.message
+                    sources = []
+
+                #
+                # Reemplaza el spinner por la respuesta
+                #
+                response_placeholder.empty()
+
+                st.markdown(assistant_message)
+
+                render_sources(
+                    sources,
+                    "current"
+                )
+
+            #
+            # Persistir conversación
+            #
             st.session_state.messages.append({
+                "id": uuid4().hex,
                 "role": "user",
                 "content": question
             })
 
-            with st.chat_message("user"):
-                st.markdown(question)
-
-            with st.chat_message("assistant"):
-                with st.spinner(
-                        "🧠 Analizando documentos..."
-                ):
-                    response = requests.post(
-                        f"{settings.api_base_url}/chat",
-                        json={
-                            "question": question
-                        }
-                    )
-                    data = response.json()
-
-                st.markdown(
-                    data["answer"]
-                )
-
-                render_sources(
-                    data["sources"]
-                )
-
             st.session_state.messages.append({
+                "id": uuid4().hex,
                 "role": "assistant",
-                "content": data["answer"],
-                "sources": data["sources"]
+                "content": assistant_message,
+                "sources": sources
             })
 
-    #
+            st.rerun()
+
+    # ------------------------------------------------------------------
     # VISOR
-    #
+    # ------------------------------------------------------------------
+
     with viewer_column:
 
         st.subheader("📄 Documento")

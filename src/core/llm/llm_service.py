@@ -18,6 +18,8 @@ Proyecto:
 """
 from langchain_google_genai import ChatGoogleGenerativeAI
 
+from config.settings import settings
+
 
 class LLMService:
     """
@@ -36,5 +38,6 @@ class LLMService:
 
         return ChatGoogleGenerativeAI(
             model="models/gemini-flash-latest",
-            temperature=0
+            temperature=0,
+            api_key=settings.google_api_key
         )

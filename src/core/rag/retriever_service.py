@@ -36,15 +36,15 @@ class RetrieverService:
             semánticas sobre los documentos procesados.
     """
 
-    def __init__(self, vector_store):
-        self.vector_store = vector_store
+    def __init__(self, index_service):
+        self.index_service = index_service
 
     def search(self, question: str, k: int = 12, fetch: int = 20) -> list[Document]:
         """Recupera hasta ``k`` chunks para una pregunta.
 
         ``fetch`` amplía el conjunto candidato antes de aplicar diversidad MMR.
         """
-        return self.vector_store.max_marginal_relevance_search(
+        return self.index_service.vector_store.max_marginal_relevance_search(
             query=question,
             k=k,
             fetch_k=fetch

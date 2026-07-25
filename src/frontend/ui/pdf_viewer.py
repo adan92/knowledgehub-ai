@@ -66,20 +66,15 @@ def render_pdf_panel() -> None:
     st.text(
         source['content']
     )
+    """
+    url = (
+        f"{settings.public_base_url}"
+        f"/api/documents/{quote(source['filename'])}"
+        f"#page={source['page']}"
+    )
+    st.link_button(
+        "🌐 Abrir PDF",
+        url
+    )
+    """
 
-    pdf_path = Path(source['filepath'])
-
-    if pdf_path.exists():
-        url = (
-            f"{settings.api_base_url}"
-            f"/documents/{quote(source['filename'])}"
-            f"#page={source['page']}"
-        )
-        st.link_button(
-            "🌐 Abrir PDF",
-            url
-        )
-    else:
-        st.error(
-            "No fue posible localizar el documento."
-        )

@@ -38,11 +38,7 @@ KnowledgeHub AI ofrece una capa conversacional sobre esos documentos: indexa su 
 
 ## 📹 Video demostrativo
 
-> Pendiente de publicación
-
-**YouTube**
-
-https://youtube.com/...
+[streamlit-app-2026-07-25-20-04-46.webm](https://github.com/user-attachments/assets/bf9f0aa9-b264-43b4-969b-b0f2b92a53fa)
 
 ---
 
@@ -57,13 +53,10 @@ Con los documentos de ejemplo incluidos:
 
 | Pregunta                                        | Respuesta |
 |-------------------------------------------------|-----------|
-| ¿Cuál es el stack tecnológico estándar?         | .         |
-| ¿Qué tecnologías utiliza el proyecto Frontend?  | .         |
-| ¿Qué frameworks se mencionan?                   | .         |
-| ¿Cuál es la arquitectura del proyecto? | .         |
-| ¿Qué responsabilidades tiene el Backend?            | .         |
-| ¿Cómo está organizado el Frontend?            | .         |
-| ¿Qué herramientas recomienda la guía?           | .         |
+| ¿Cuál es el stack tecnológico estándar?         | Según la información proporcionada en el documento, el ecosistema y stack tecnológico estándar está compuesto por: Lenguaje & Runtime: Java 17+ (LTS), con adopción gradual de Java 21 (Virtual Threads), y TypeScript 5.0+. Framework Principal: Spring Boot 3+, Spring Security, Spring Cloud. Contenedorización: Docker (imágenes inmutables), orquestados en AWS ECS Fargate. Bases de Datos: PostgreSQL (relacional), MongoDB/AWS DocumentDB (documentos), Redis/AWS ElastiCache (caché). Mensajería: AWS SQS (colas y eventos entre dominios). Autenticación: JWT + OAuth 2.0 / OpenID Connect, gestionado por auth-service. Observabilidad: SLF4J + Logback, Spring Boot Actuator, Micrometer, Prometheus, Datadog. CI/CD: GitHub Actions + Pipelines con Docker, Flyway/Liquibase para migrations. Secrets Management: AWS Secrets Manager + Spring Cloud Config.         |
+| ¿Qué frameworks se mencionan?                   | En el texto se mencionan los siguientes frameworks: React (indicado como Framework UI) Next.js (indicado como Meta-framework) Spring Boot (indicado como Framework)         |
+| ¿Cuál es la arquitectura del proyecto? | Según la información proporcionada en el documento, el proyecto utiliza los siguientes enfoques y patrones arquitectónicos: Arquitectura General: Es una arquitectura de microservicios organizada por dominios de negocio, que permite la autonomía de los squads e independencia de despliegues. Back-end (Java 17+ y Spring Boot 3+): Adopta una arquitectura en capas (Layered Architecture), dividida principalmente en: Controllers (@RestController): Encargados de recibir peticiones HTTP, validar parámetros de entrada, llamar al servicio correspondiente y devolver respuestas HTTP. No contienen reglas de negocio. Services (@Service): El núcleo de la aplicación, donde residen las reglas de negocio y la orquestación de llamadas a repositorios y servicios externos. Front-end (Arquitectura de Componentes): Adopta la metodología Atomic Design como sistema de organización y clasificación de componentes en una jerarquía (Átomos, Moléculas, Organismos, Templates).       |
+| ¿Qué responsabilidades tiene el Backend?            | Según la información proporcionada en el contexto, el back-end tiene las siguientes responsabilidades:Seguridad y Autorización: Albergar toda la lógica de autorización y validación de datos sensibles. La autorización real siempre debe verificarse en el back-end. Validación de Entradas: Actuar como la última y más importante línea de defensa, aplicando la regla de nunca confiar en los datos enviados por el cliente. Implementa validaciones estrictas en múltiples capas para mitigar riesgos de SQL Injection, Cross-Site Scripting (XSS) y prevenir la persistencia de datos corruptos. Manejo de Persistencia y Peticiones (principios SRP): La lógica de persistencia y comunicación con la base de datos reside exclusivamente en los Repositories. Los Controllers se enfocan únicamente en el manejo de peticiones y respuestas HTTP.         | 
 
 
 ## Arquitectura
